@@ -17,8 +17,9 @@ void ShapeZ::initScene(){
     setWindowTitle(GAME_TITLE);
 //    scenes* scene = new scenes();
 //    scene->show();
-    playscene* scene2 = new playscene();
+    startscene* scene2 = new startscene();
 //    qDebug()<<"show";
     scene2->show();
+//    delete scene2;
 //    this->show();
 }

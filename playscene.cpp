@@ -1,13 +1,15 @@
 ﻿#include "playscene.h"
 
 playscene::playscene()
-    :drillButton(":/res/mminer.png", ""), beltButton(":/res/belt.png", ""), cutterButton(":/res/cutter0.png", ""), binButton(":/res/trash0.png", ""),coinlabel("Current Coin: 0")
+    :drillButton(":/res/mminer.png", ""), beltButton(":/res/belt.png", ""), cutterButton(":/res/cutter0.png", ""),
+      binButton(":/res/trash0.png", ""),coinlabel("Current Coin: 0"), musicButton(":/res/music_on.png", ":/res/music_off.png"),
+      exitButton(":/res/exit.png", "")
 {
     isMousePressed = false;
     setMouseTracking(true);
     createvent = 0;
     imageLabel = new QLabel(this);
-    map = new Map(mineUp, mapUp, moneyUp);
+    map = new Map(money, mineUp, mapUp, moneyUp);
 //    qDebug()<<"Mapsetted";
     drillButton.move(width()/6, height()-90);
     drillButton.setParent(this);
@@ -21,6 +23,20 @@ playscene::playscene()
     connect(&beltButton, &mypushbutton::clicked, this, &playscene::beltcreat);
     connect(&cutterButton, &mypushbutton::clicked, this, &playscene::cuttercreat);
     connect(&binButton, &mypushbutton::clicked, this, &playscene::bincreat);
+    //音乐初始化
+    mediaPlaylist.addMedia(QUrl("qrc:/res/music.mp3"));
+    mediaPlaylist.setPlaybackMode(QMediaPlaylist::Loop);
+    mediaPlayer.setPlaylist(&mediaPlaylist);
+//    mediaPlayer.setMedia(QUrl("qrc:/path/to/your/music.mp3"));
+    mediaPlayer.play();
+    musicButton.move(width()- 90, height()-180);
+    musicButton.setParent(this);
+    connect(&musicButton, &mypushbutton::clicked, this, &playscene::musicEvent);
+    //退出键
+    exitButton.move(width()- 90, height()-90);
+    exitButton.setIconSize(QSize(70,70));
+    exitButton.setParent(this);
+    connect(&exitButton, &mypushbutton::clicked, this, &playscene::exitEvent);
 //    this->show();
     imageLabel->setPixmap(QPixmap(":/res/miner.png"));
     imageLabel->hide();
@@ -51,8 +67,7 @@ playscene::playscene()
     });
     cutterspeed = 1000;
     cutterTime->start(cutterspeed);
-    mediaPlaylist.addMedia(QUrl("qrc:/path/to/your/music.mp3"));
-    mediaPlayer.setPlaylist(&mediaPlaylist);
+
     setlabel();
 }
 
@@ -179,19 +194,71 @@ void playscene::paintEvent(QPaintEvent *event) {
     painter.drawPixmap(gridSize * (map->centPos.x - map->startPos[map->level].x) - gridSize/2 ,gridSize * (map->centPos.y - map->startPos[map->level].y) - gridSize/2 , gridSize * (map->centSize+1),gridSize * (map->centSize+1),image);
 
     //绘制金币
-
+    money = map->coin;
     coinlabel.setText(QString::number(map->coin));
-    coinlabel.show();
+    good1label.setText(QString::number(map->handedGoods[1]));
+    good2label.setText(QString::number(map->handedGoods[2]));
+    good3label.setText(QString::number(map->handedGoods[3]));
+//    coinlabel.show();
 }
 void playscene::setlabel(){
     //金币
+    QPixmap image;
+    image.load(":/res/crown_coin.png");
+    image = image.scaled(90, 90);
+    coin.setPixmap(image);
+    coin.setGeometry(width()-90, 0, 90, 90);
+    coin.setParent(this);
+    coin.show();
     coinlabel.setFont(font);
     coinlabel.setPalette(palette);
     coinlabel.setAlignment(Qt::AlignCenter);
     coinlabel.setText("0");
-    coinlabel.setGeometry(width()-90, 0, 90, 90);
+    coinlabel.setGeometry(width()-90, 70, 90, 90);
     coinlabel.setParent(this);
     coinlabel.show();
+
+    image.load(":/res/iron_mine.png");
+    image = image.scaled(90, 90);
+    good1.setPixmap(image);
+    good1.setGeometry(width()-90, 180, 90, 90);
+    good1.setParent(this);
+    good1.show();
+    good1label.setFont(font);
+    good1label.setPalette(palette);
+    good1label.setAlignment(Qt::AlignCenter);
+    good1label.setText("0");
+    good1label.setGeometry(width()-90, 270, 90, 90);
+    good1label.setParent(this);
+    good1label.show();
+
+    image.load(":/res/copper_mine.png");
+    image = image.scaled(90, 90);
+    good2.setPixmap(image);
+    good2.setGeometry(width()-90, 360, 90, 90);
+    good2.setParent(this);
+    good2.show();
+    good2label.setFont(font);
+    good2label.setPalette(palette);
+    good2label.setAlignment(Qt::AlignCenter);
+    good2label.setText("0");
+    good2label.setGeometry(width()-90, 450, 90, 90);
+    good2label.setParent(this);
+    good2label.show();
+
+    image.load(":/res/half_copper_mine.png");
+    image = image.scaled(90, 90);
+    good3.setPixmap(image);
+    good3.setGeometry(width()-90, 540, 90, 90);
+    good3.setParent(this);
+    good3.show();
+    good3label.setFont(font);
+    good3label.setPalette(palette);
+    good3label.setAlignment(Qt::AlignCenter);
+    good3label.setText("0");
+    good3label.setGeometry(width()-90, 630, 90, 90);
+    good3label.setParent(this);
+    good3label.show();
 }
 void playscene::drillcreat(){
     qDebug()<<"drill";
@@ -232,4 +299,23 @@ void playscene::bincreat(){
     imageLabel->setScaledContents(true);
     QPoint cursorPos = QCursor::pos();  // 获取全局光标位置
     imageLabel->setGeometry(cursorPos.x() - map->gridSize / 2, cursorPos.y() - map->gridSize / 2, map->gridSize, map->gridSize);
+}
+void playscene::musicEvent(){
+    if (mediaPlayer.state() == QMediaPlayer::PlayingState) {
+        mediaPlayer.pause();
+        QPixmap pix;
+        pix.load(musicButton.clkImgpath);
+        musicButton.setIcon(pix);
+        musicButton.setIconSize(QSize(90,90));
+    } else {
+        mediaPlayer.play();
+        QPixmap pix;
+        pix.load(musicButton.imgpath);
+        musicButton.setIcon(pix);
+        musicButton.setIconSize(QSize(90,90));
+    }
+}
+void playscene::exitEvent(){
+
+
 }

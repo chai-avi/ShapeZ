@@ -14,6 +14,7 @@ public:
     static QMap<position, Goods*> goodsMap;
     Goods(position pos,int t):type(t){
         curpos = pos;
+        nextpos = pos;
         goodsMap[pos] = this;
         switch (type) {
         case 1:

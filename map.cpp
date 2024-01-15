@@ -42,12 +42,12 @@ void Map::addMine(int sum)
 void Map::setRandMine(int sum){
     addMine(sum);
 }
-Map::Map(bool mineUp, bool mapUp, bool moneyUp){
+Map::Map(int money, bool mineUp, bool mapUp, bool moneyUp){
     for (int i=0; i<=4; i++) {
         handedGoods[i] = 0;
     }
     gridSize = 100;
-    coin = 0;
+    coin = money;
     addcoin = 1;
     mineNum = 2; level = 0;
     for (int i = 0; i < row[2]; i++) {
@@ -57,15 +57,16 @@ Map::Map(bool mineUp, bool mapUp, bool moneyUp){
 
         }
     }
+    levelUp();
     setRandMine(30);
     setCenter(4);
-    if(add){
+    if(mineUp){
         addMine(60);
     }
     if(mapUp){
         levelUp();
     }
-    if(money){
+    if(moneyUp){
         addcoin = 2;
     }
 }

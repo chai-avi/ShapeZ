@@ -28,7 +28,7 @@ public:
         return pos.x >= 0 && pos.x < row[2] && pos.y >= 0 && pos.y < col[2];
     }
     Map(){}
-    Map(bool mineUp, bool mapUp, bool moneyUp);
+    Map(int money, bool mineUp, bool mapUp, bool moneyUp);
 //    :rowCount(x), colCount(y){}
     int askGrid(position pos){
         return gridMap[pos];

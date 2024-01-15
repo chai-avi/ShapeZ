@@ -10,6 +10,7 @@
 #include"tools.h"
 #include"scenes.h"
 #include"playscene.h"
+#include"startscene.h"
 namespace Ui {
 class ShapeZ;
 }
