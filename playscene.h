@@ -13,6 +13,7 @@
 class playscene :  public scenes
 {
     Q_OBJECT
+private:
     void paintEvent(QPaintEvent *event)override;
     QTimer timer, totaltimer;
     int createvent; //0, 1drill, 2belt, 3cutter, 4bin;
@@ -25,6 +26,7 @@ class playscene :  public scenes
     QMediaPlayer mediaPlayer;
     QMediaPlaylist mediaPlaylist;
     void setlabel();
+
 public:
     Map* map;
     mypushbutton drillButton, beltButton, cutterButton, binButton, rotaterButton, musicButton, exitButton;

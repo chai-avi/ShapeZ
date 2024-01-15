@@ -163,6 +163,9 @@ void playscene::paintEvent(QPaintEvent *event) {
             QPixmap image;
             image.load(it.value()->imgpath);
             image = image.scaled(gridSize*2/3, gridSize*2/3);
+            QTransform rotationTransform;
+            rotationTransform.rotate(90 * it.value()->dir);
+            image = image.transformed(rotationTransform);
             painter.drawPixmap((pos.x - map->startPos[map->level].x) * gridSize + gridSize/6 + dir.x*time*gridSize/beltspeed, (pos.y - map->startPos[map->level].y) * gridSize+gridSize/6+ dir.y*time*gridSize/beltspeed,image);
         }
     }

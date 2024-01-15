@@ -113,6 +113,42 @@ void actrules::goodNext(Goods* good, Map* mp){
         good->nextpos = good->curpos;
         good->acted = true;
         good->isStop = true;
+        break;
+    case 5:
+        if(mp->askGrid(install->validOut[0]) != 3){
+            if(mp->askGrid(install->validOut[0]) == 1)
+            {
+                good->acted = true;
+                good->isStop = false;
+                good->nextpos = install->validOut[0];
+                good->dir = (good->dir+1)%4;
+            }
+            else{
+                good->nextpos = good->curpos;
+                good->acted = true;
+                good->isStop = true;
+            }
+        }
+        else if(Goods::goodsMap.contains(install->validOut[0])){
+            if(Goods::goodsMap[install->validOut[0]]->isStop == false){
+                good->acted = true;
+                good->isStop = false;
+                good->nextpos = install->validOut[0];
+                good->dir = (good->dir+1)%4;
+            }
+            else{
+                good->nextpos = good->curpos;
+                good->acted = true;
+                good->isStop = true;
+            }
+        }
+        else{
+            good->dir = (good->dir+1)%4;
+            good->acted = true;
+            good->isStop = false;
+            good->nextpos = install->validOut[0];
+        }
+        break;
     }
 }
 void actrules::movegood(Goods* good, Map* mp, QMap<position, Goods*>&tmpGoodmap){
@@ -171,7 +207,7 @@ void actrules:: produceGoods(Map* mp){
             if(mp->askGrid(pos)==3 && mp->askInstall(pos)->type==1){
                 if(Goods::goodsMap.contains(pos) == false && mp->askMine(pos)>0){
                     qDebug()<<"new"<<pos.x<<' '<<pos.y;
-                    new Goods(pos, mp->askMine(pos));
+                    new Goods(pos, mp->askMine(pos), 0);
                 }
             }
         }
@@ -186,8 +222,8 @@ void actrules:: cutGoods(Map* mp){
                     Installations* install = mp->askInstall(pos);
                     if(mp->askGrid(install->validOut[0]) == 3 && mp->askGrid(install->validOut[1]) == 3 && Goods::goodsMap.contains(install->validOut[0]) == false && Goods::goodsMap.contains(install->validOut[1]) == false){
                         Goods::goodsMap[pos]->~Goods();
-                        new Goods(install->validOut[0], 3);
-                        new Goods(install->validOut[1], 3);
+                        new Goods(install->validOut[0], 3, 0);
+                        new Goods(install->validOut[1], 3, 2);
                     }
                 }
             }

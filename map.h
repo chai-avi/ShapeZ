@@ -58,6 +58,9 @@ public:
         case 4:
             i = new trash(pos);
             break;
+        case 5:
+            i = new rotater(pos, dir);
+            break;
         }
     }
     void setGrid(position pos, int x){

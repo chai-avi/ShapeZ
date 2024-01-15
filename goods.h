@@ -7,12 +7,13 @@ class Goods
 {
 public:
     int type; // 1 iron, 2 copper, 3 halfcopper
+    int dir;
     bool cutable; // 0 uncutable others cutable
     QString imgpath;
     position curpos, nextpos;
     bool isStop, acted, moved;
     static QMap<position, Goods*> goodsMap;
-    Goods(position pos,int t):type(t){
+    Goods(position pos,int t,int d):type(t),dir(d){
         curpos = pos;
         nextpos = pos;
         goodsMap[pos] = this;
