@@ -1,0 +1,18 @@
+﻿#ifndef PLAYSECNE_H
+#define PLAYSECNE_H
+#include"tools.h"
+#include"scenes.h"
+
+class playsecne :  public scenes
+{
+    Q_OBJECT
+    Map* map;
+public:
+    explicit playsecne(QWidget *parent = nullptr);
+
+signals:
+
+public slots:
+};
+
+#endif // PLAYSECNE_H

@@ -1,0 +1,40 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/belt.png</file>
+        <file>res/clubs.png</file>
+        <file>res/cutter0.png</file>
+        <file>res/diamonds.png</file>
+        <file>res/mminer.png</file>
+        <file>res/pounce.png</file>
+        <file>res/refinery.png</file>
+        <file>res/scissors.png</file>
+        <file>res/spades.png</file>
+        <file>res/stockpiles (1).png</file>
+        <file>res/stockpiles (2).png</file>
+        <file>res/stockpiles (3).png</file>
+        <file>res/stockpiles.png</file>
+        <file>res/trash0.png</file>
+        <file>res/trash-can.png</file>
+        <file>res/belt_left.png</file>
+        <file>res/belt_right.png</file>
+        <file>res/belt_top.png</file>
+        <file>res/ccutter.png</file>
+        <file>res/cutter.png</file>
+        <file>res/miner.png</file>
+        <file>res/miner0.png</file>
+        <file>res/miner-chainable.png</file>
+        <file>res/trash.png</file>
+        <file>res/ttrash.png</file>
+        <file>res/belt_top0.png</file>
+        <file>res/center_0.png</file>
+        <file>res/copper.png</file>
+        <file>res/copper_mine.png</file>
+        <file>res/half_copper_mine.png</file>
+        <file>res/iron.png</file>
+        <file>res/iron_mine.png</file>
+        <file>res/music_off.png</file>
+        <file>res/music_on.png</file>
+        <file>res/save.png</file>
+        <file>res/settings_menu_exit.png</file>
+    </qresource>
+</RCC>

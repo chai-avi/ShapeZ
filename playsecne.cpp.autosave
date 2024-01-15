@@ -1,0 +1,7 @@
+﻿#include "playsecne.h"
+
+playsecne::playsecne(QWidget *parent): scenes(parent) 
+{
+    map = new Map(GAME_WIDTH/30, GAME_HEIGHT/30, 2);
+    
+}
