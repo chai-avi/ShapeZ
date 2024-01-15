@@ -13,7 +13,6 @@
 class playscene :  public scenes
 {
     Q_OBJECT
-    Map* map;
     void paintEvent(QPaintEvent *event)override;
     QTimer timer, totaltimer;
     int createvent; //0, 1drill, 2belt, 3cutter, 4bin;
@@ -27,9 +26,11 @@ class playscene :  public scenes
     QMediaPlaylist mediaPlaylist;
     void setlabel();
 public:
-    mypushbutton drillButton, beltButton, cutterButton, binButton, musicButton, exitButton;
+    Map* map;
+    mypushbutton drillButton, beltButton, cutterButton, binButton, rotaterButton, musicButton, exitButton;
     explicit playscene();
     ~playscene()override{
+        Goods::goodsMap.clear();
         delete map;
         delete imageLabel;
         delete beltTime;
@@ -58,7 +59,7 @@ protected:
         }
         // 更新 QLabel 的位置，使其追随鼠标光标
         imageLabel->move(cursorPos.x() - imageLabel->width() / 2, cursorPos.y() - imageLabel->height() / 2);
-        update();
+//        update();
     }
     void mousePressEvent(QMouseEvent *event) override {
         if (event->button() == Qt::RightButton) {
@@ -140,8 +141,21 @@ public slots:
     void beltcreat();
     void cuttercreat();
     void bincreat();
+    void rotatercreat();
     void musicEvent();
     void exitEvent();
+    void timeStart(){
+        beltTime->start(beltspeed);
+        cutterTime->start(cutterspeed);
+        drillerTime->start(drillerspeed);
+//        updatetimer->start();
+    }
+    void timeStop(){
+        beltTime->stop();
+        cutterTime->stop();
+        drillerTime->stop();
+//        updatetimer->start();
+    }
 };
 
 #endif // PLAYSECNE_H

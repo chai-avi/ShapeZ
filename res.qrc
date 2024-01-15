@@ -27,5 +27,24 @@
         <file>res/trash.png</file>
         <file>res/trash0.png</file>
         <file>res/ttrash.png</file>
+        <file>res/big_logo.png</file>
+        <file>res/load.jpg</file>
+        <file>res/newgame.jpg</file>
+        <file>res/store.jpg</file>
+        <file>res/load.png</file>
+        <file>res/play.png</file>
+        <file>res/shop.png</file>
+        <file>res/coins.png</file>
+        <file>res/coinup0.JPG</file>
+        <file>res/coinup1.JPG</file>
+        <file>res/map.png</file>
+        <file>res/mapup0.JPG</file>
+        <file>res/mapup1.JPG</file>
+        <file>res/mineral.png</file>
+        <file>res/mineup0.JPG</file>
+        <file>res/mineup1.JPG</file>
+        <file>res/rotater.png</file>
+        <file>res/rotater0.png</file>
+        <file>res/rrotater.png</file>
     </qresource>
 </RCC>

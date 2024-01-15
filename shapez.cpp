@@ -12,14 +12,33 @@ ShapeZ::~ShapeZ()
     delete ui;
 }
 void ShapeZ::initScene(){
-    setFixedSize(GAME_WIDTH+120,GAME_HEIGHT+120);
+    setFixedSize(GAME_WIDTH,GAME_HEIGHT);
         //设置窗口标题
     setWindowTitle(GAME_TITLE);
-//    scenes* scene = new scenes();
-//    scene->show();
-    startscene* scene2 = new startscene();
-//    qDebug()<<"show";
-    scene2->show();
-//    delete scene2;
-//    this->show();
+    gamescene = new scenes();
+    start = new startscene();
+    shop = new shopscene;
+    start->show();
+    connect(&start->newgameButton, &mypushbutton::clicked, this, [=](){
+        play = new playscene();
+        play->show();
+        start->close();
+        connect(&play->exitButton, &mypushbutton::clicked, this, [=](){
+            start->show();
+            play->close();
+            scenes::money = play->map->coin;
+            qDebug()<<"money "<<scenes::money;
+            delete play;
+            qDebug()<<"money "<<scenes::money;
+        });
+    });
+    connect(&start->storeButton, &mypushbutton::clicked, this, [=](){
+        shop->coinlabel.setText(QString::number(scenes::money));
+        shop->show();
+        start->close();
+    });
+    connect(&shop->exitButton, &mypushbutton::clicked, this, [=](){
+        start->show();
+        shop->close();
+    });
 }

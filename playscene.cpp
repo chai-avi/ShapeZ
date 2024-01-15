@@ -2,8 +2,8 @@
 
 playscene::playscene()
     :drillButton(":/res/mminer.png", ""), beltButton(":/res/belt.png", ""), cutterButton(":/res/cutter0.png", ""),
-      binButton(":/res/trash0.png", ""),coinlabel("Current Coin: 0"), musicButton(":/res/music_on.png", ":/res/music_off.png"),
-      exitButton(":/res/exit.png", "")
+      binButton(":/res/trash0.png", ""), musicButton(":/res/music_on.png", ":/res/music_off.png"),
+      exitButton(":/res/exit.png", ""), rotaterButton(":/res/rotater.png", "")
 {
     isMousePressed = false;
     setMouseTracking(true);
@@ -19,10 +19,13 @@ playscene::playscene()
     cutterButton.setParent(this);
     binButton.move(width()*2/3, height()-90);
     binButton.setParent(this);
+    rotaterButton.move(width()*5/6, height()-90);
+    rotaterButton.setParent(this);
     connect(&drillButton, &mypushbutton::clicked, this, &playscene::drillcreat);
     connect(&beltButton, &mypushbutton::clicked, this, &playscene::beltcreat);
     connect(&cutterButton, &mypushbutton::clicked, this, &playscene::cuttercreat);
     connect(&binButton, &mypushbutton::clicked, this, &playscene::bincreat);
+    connect(&rotaterButton, &mypushbutton::clicked, this, &playscene::rotatercreat);
     //音乐初始化
     mediaPlaylist.addMedia(QUrl("qrc:/res/music.mp3"));
     mediaPlaylist.setPlaybackMode(QMediaPlaylist::Loop);
@@ -36,7 +39,7 @@ playscene::playscene()
     exitButton.move(width()- 90, height()-90);
     exitButton.setIconSize(QSize(70,70));
     exitButton.setParent(this);
-    connect(&exitButton, &mypushbutton::clicked, this, &playscene::exitEvent);
+//    connect(&exitButton, &mypushbutton::clicked, this, &playscene::exitEvent);
 //    this->show();
     imageLabel->setPixmap(QPixmap(":/res/miner.png"));
     imageLabel->hide();
@@ -44,12 +47,12 @@ playscene::playscene()
     connect(updatetimer, &QTimer::timeout, this, [=](){
         update();
     });
-    updatetimer->start(20); // 每20毫秒触发一次
+    updatetimer->start(100);
     beltTime = new QTimer(this);
     connect(beltTime, &QTimer::timeout, this, [=](){
         qDebug()<<"tomove";
-        actrules::calNext(map);
         actrules::moveall(map);
+        actrules::calNext(map);
         qDebug()<<"moved";
         qDebug()<<"caled";
     });
@@ -154,10 +157,13 @@ void playscene::paintEvent(QPaintEvent *event) {
     if(Goods::goodsMap.empty()==false){
         for (auto it = Goods::goodsMap.begin(); it != Goods::goodsMap.end(); ++it) {
             position pos = it.value()->curpos;
+            position dir = {it.value()->nextpos.x - it.value()->curpos.x, it.value()->nextpos.y - it.value()->curpos.y};
+            int time = beltspeed - beltTime->remainingTime();
+            qDebug()<<"Time "<<time<<' '<<dir.x<<' '<<dir.y;
             QPixmap image;
             image.load(it.value()->imgpath);
             image = image.scaled(gridSize*2/3, gridSize*2/3);
-            painter.drawPixmap((pos.x - map->startPos[map->level].x) * gridSize+gridSize/6, (pos.y - map->startPos[map->level].y) * gridSize+gridSize/6,image);
+            painter.drawPixmap((pos.x - map->startPos[map->level].x) * gridSize + gridSize/6 + dir.x*time*gridSize/beltspeed, (pos.y - map->startPos[map->level].y) * gridSize+gridSize/6+ dir.y*time*gridSize/beltspeed,image);
         }
     }
     //绘制设备
@@ -194,7 +200,6 @@ void playscene::paintEvent(QPaintEvent *event) {
     painter.drawPixmap(gridSize * (map->centPos.x - map->startPos[map->level].x) - gridSize/2 ,gridSize * (map->centPos.y - map->startPos[map->level].y) - gridSize/2 , gridSize * (map->centSize+1),gridSize * (map->centSize+1),image);
 
     //绘制金币
-    money = map->coin;
     coinlabel.setText(QString::number(map->coin));
     good1label.setText(QString::number(map->handedGoods[1]));
     good2label.setText(QString::number(map->handedGoods[2]));
@@ -296,6 +301,16 @@ void playscene::bincreat(){
     tmpdir = 0;
     imageLabel->show();
     imageLabel->setPixmap(QPixmap(":/res/trash.png"));
+    imageLabel->setScaledContents(true);
+    QPoint cursorPos = QCursor::pos();  // 获取全局光标位置
+    imageLabel->setGeometry(cursorPos.x() - map->gridSize / 2, cursorPos.y() - map->gridSize / 2, map->gridSize, map->gridSize);
+}
+void playscene::rotatercreat(){
+    qDebug()<<"belt";
+    createvent = 5;
+    tmpdir = 0;
+    imageLabel->show();
+    imageLabel->setPixmap(QPixmap(":/res/rotater0.png"));
     imageLabel->setScaledContents(true);
     QPoint cursorPos = QCursor::pos();  // 获取全局光标位置
     imageLabel->setGeometry(cursorPos.x() - map->gridSize / 2, cursorPos.y() - map->gridSize / 2, map->gridSize, map->gridSize);

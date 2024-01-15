@@ -30,6 +30,7 @@ public:
             cutable = 0;
             break;
         }
+        isStop=true; acted = false; moved = false;
     }
     ~Goods(){
 //        Goods* p = goodsMap[curpos];

@@ -5,7 +5,7 @@
 class Installations
 {
 public:
-    int size_x, size_y, type;//type:1.driller 2.belt 3.cutter 4.bin
+    int size_x, size_y, type;//type:1.driller 2.belt 3.cutter 4.bin 5rotater
     position pos;
     int dir;
     QVector<position> validIn, validOut;
@@ -50,4 +50,9 @@ public:
     trash(position p);
 };
 
+class rotater:public Installations
+{
+public:
+    rotater(position p, int direction);
+};
 #endif // INSTALLATIONS_H

@@ -36,7 +36,8 @@ SOURCES += \
     playscene.cpp \
     mypushbutton.cpp \
     actrules.cpp \
-    startscene.cpp
+    startscene.cpp \
+    shopscene.cpp
 
 HEADERS += \
         shapez.h \
@@ -49,7 +50,8 @@ HEADERS += \
     playscene.h \
     mypushbutton.h \
     actrules.h \
-    startscene.h
+    startscene.h \
+    shopscene.h
 
 FORMS += \
         shapez.ui

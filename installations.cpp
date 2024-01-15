@@ -58,5 +58,17 @@ trash::trash(position p):Installations (p)
     InstallMap[pos] = this;
     imgpath = ":/res/ttrash.png";
 }
+
+rotater::rotater(position p, int direction):Installations (p)
+{
+    size_x = 1;
+    size_y = 1;
+    type = 5;
+    dir = direction % 4;
+    validOut.append({p.x+Directions[dir].x, p.y+Directions[dir].y});
+    validIn.append({p.x+Directions[(dir+2)%4].x, p.y+Directions[(dir+2)%4].y});
+    InstallMap[pos] = this;
+    imgpath = ":/res/rrotater.png";
+}
 QMap<position, Installations*> Installations:: InstallMap;
 
