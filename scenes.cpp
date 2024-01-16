@@ -14,4 +14,4 @@ scenes::scenes()
 bool scenes::mineUp=false;
 bool scenes::mapUp=false;
 bool scenes::moneyUp=false;
-int scenes::money=300;
+int scenes::money=0;

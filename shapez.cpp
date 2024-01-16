@@ -3,7 +3,6 @@
 ShapeZ::ShapeZ(QWidget *parent) :
     QWidget(parent)
 {
-//    map = new Map(GAME_WIDTH/30, GAME_HEIGHT/30, 2);
     initScene();
 }
 
@@ -28,9 +27,7 @@ void ShapeZ::initScene(){
             start->show();
             play->close();
             scenes::money = play->map->coin;
-            qDebug()<<"money "<<scenes::money;
             delete play;
-            qDebug()<<"money "<<scenes::money;
         });
         connect(&play->loadButton, &mypushbutton::clicked, this, &ShapeZ::saveload);
     });
@@ -40,7 +37,6 @@ void ShapeZ::initScene(){
         start->close();
     });
     connect(&start->exitButton, &mypushbutton::clicked, this, [=](){
-        qDebug()<<"eixt";
         start->close();
         this->close();
     });
@@ -49,23 +45,11 @@ void ShapeZ::initScene(){
         shop->close();
     });
     //存档
-    connect(&start->loadButton, &mypushbutton::clicked, this, [=](){
-        loadload();
-        play->show();
-        start->close();
-    });
+    connect(&start->loadButton, &mypushbutton::clicked, this, &ShapeZ::loadload);
 }
-//void ShapeZ::loadload(){
-//    QSettings settings("shapeZ.ini", QSettings::IniFormat);
-//    scenes::mineUp = settings.value("MineUp").toBool();
-//    scenes::mapUp = settings.value("MapUp").toBool();
-//    scenes::moneyUp = settings.value("MoneyUp").toBool();
-//    scenes::money = settings.value("Money").toInt();
-//    play->map->level = settings.value("Level").toInt();
-//    qDebug()<<scenes::money;
-////    play->finishedTask = settings.value("FinishedTask").toInt();
-//}
+
 void ShapeZ::loadload(){
+    //导入存档
     QFile file("savedgame.txt");
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&file);
@@ -84,9 +68,7 @@ void ShapeZ::loadload(){
             start->show();
             play->close();
             scenes::money = play->map->coin;
-            qDebug()<<"money "<<scenes::money;
             delete play;
-            qDebug()<<"money "<<scenes::money;
         });
         connect(&play->loadButton, &mypushbutton::clicked, this, &ShapeZ::saveload);
 
@@ -110,54 +92,56 @@ void ShapeZ::loadload(){
 
         int a,b,c,d;
         in>>tmp;
-        play->map->gridMap.clear();
+        //地图
+        for (auto it = play->map->gridMap.begin(); it != play->map->gridMap.end(); ++it)  it.value() = 0;
         for(int i=0;i<tmp;i++){
             in >> a >> b >> c;
             play->map->gridMap[{a,b}] = c;
         }
-
+        //开采物地块
         in>>tmp;
-        play->map->mineMap.clear();
+        for (auto it = play->map->mineMap.begin(); it != play->map->mineMap.end(); ++it)  it.value() = 0;
         for(int i=0;i<tmp;i++){
             in >> a >> b >> c;
             play->map->mineMap[{a,b}] = c;
         }
-
+        //设备
         in>>tmp;
         Installations::InstallMap.clear();
         for(int i=0;i<tmp;i++){
             in >> a >> b >> c >> d;
             switch (c) {
             case 1:
-                Installations::InstallMap[{a,b}] = new driller({a,b}, d);
+                new driller({a,b}, d);
                 break;
             case 2:
-                Installations::InstallMap[{a,b}] = new belt({a,b}, d);
+                new belt({a,b}, d);
                 break;
             case 3:
-                Installations::InstallMap[{a,b}] = new cuter({a,b}, d);
+                new cuter({a,b}, d);
                 break;
             case 4:
-                Installations::InstallMap[{a,b}] = new trash({a,b});
+                new trash({a,b});
                 break;
             case 5:
-                Installations::InstallMap[{a,b}] = new rotater({a,b}, d);
+                new rotater({a,b}, d);
                 break;
             }
         }
-
+        //物品
         in>>tmp;
         Goods::goodsMap.clear();
         for(int i=0;i<tmp;i++){
             in >> a >> b >> c >> d;
             Goods::goodsMap[{a,b}] = new Goods({a,b}, c, d);
         }
-
         file.close();
+        play->show();
+        start->close();
     }
 }
 void ShapeZ::saveload(){
-
+    //存储存档
     qDebug()<<"topennnnnnnn";
     QFile file("savedgame.txt");
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -178,90 +162,30 @@ void ShapeZ::saveload(){
         out << play->beltspeed << '\n';
         out << play->cutterspeed << '\n';
         out << '\n';
-
+        //地图格点
         out << play->map->gridMap.size() << '\n';
         for (auto it = play->map->gridMap.begin(); it != play->map->gridMap.end(); ++it) {
             out<<it.key().x<<' '<<it.key().y<<' '<<it.value()<<'\n';
         }
         out << '\n';
-
+        //开采物地图
         out << play->map->mineMap.size() << '\n';
         for (auto it = play->map->mineMap.begin(); it != play->map->mineMap.end(); ++it) {
             out<<it.key().x<<' '<<it.key().y<<' '<<it.value()<<'\n';
         }
         out << '\n';
-
+        //设备地图
         out << Installations::InstallMap.size() << '\n';
         for (auto it = Installations::InstallMap.begin(); it != Installations::InstallMap.end(); ++it) {
             out<<it.key().x<<' '<<it.key().y<<' '<<it.value()->type<<' '<<it.value()->dir<<'\n';
         }
         out << '\n';
-
+        //物品地图
         out << Goods::goodsMap.size() << '\n';
         for (auto it = Goods::goodsMap.begin(); it != Goods::goodsMap.end(); ++it) {
             out<<it.key().x<<' '<<it.key().y<<' '<<it.value()->type<<' '<<it.value()->dir<<'\n';
         }
         out << '\n';
-
         file.close();
-        qDebug()<<"opened";
     }
-    else{
-        qDebug()<<"notopen";
-    }
-
 }
-//void ShapeZ::saveload(){
-//    QSettings settings("shapeZ.ini", QSettings::IniFormat);
-//    //全局变量
-//    settings.setValue("MineUp", scenes::mineUp);
-//    settings.setValue("MapUp", scenes::mapUp);
-//    settings.setValue("MoneyUp", play->map->coin);
-//    settings.setValue("Money", scenes::money);
-//    qDebug()<<scenes::money<<' '<<settings.value("Money").toInt();
-//    //局部参数
-//    settings.setValue("Level", play->map->level);
-////    settings.setValue("FinishedTask", play->finishedTask);
-
-////    settings.setValue("TaskFlag1", play->taskFlag[1]);
-////    settings.setValue("TaskFlag2", play->taskFlag[2]);
-////    settings.setValue("TaskFlag3", play->taskFlag[3]);
-
-////    settings.setValue("UpFlag1", play->upFlag[1]);
-////    settings.setValue("UpFlag2", play->upFlag[2]);
-////    settings.setValue("UpFlag3", play->upFlag[3]);
-///
-////    QMap<int, int> map1;
-////    for (auto it = play->map->gridMap.begin(); it != play->map->gridMap.end(); ++it) {
-////        map1[it.key().x*100+it.key().y] = it.value();
-////    }
-////    QVariant mapVariant = QVariant::fromValue(map1);
-////    settings.setValue("GridMap", mapVariant);
-////    map1.clear();
-////    for (auto it = play->map->mineMap.begin(); it != play->map->mineMap.end(); ++it) {
-////        map1[it.key().x*100+it.key().y] = it.value();
-////    }
-////    mapVariant = QVariant::fromValue(map1);
-////    settings.setValue("MineMap", mapVariant);
-
-
-////    map1.clear();
-////    for (auto it = Installations::InstallMap.begin(); it != Installations::InstallMap.end(); ++it) {
-////        map1[it.key().x*100+it.key().y] = it.value()->dir;
-////    }
-////    mapVariant = QVariant::fromValue(map1);
-////    settings.setValue("InstallDir", mapVariant);
-////    map1.clear();
-////    for (auto it = Goods::goodsMap.begin(); it != Goods::goodsMap.end(); ++it) {
-////        map1[it.key().x*100+it.key().y] = it.value()->dir;
-////    }
-////    mapVariant = QVariant::fromValue(map1);
-////    settings.setValue("GoodDir", mapVariant);
-////    map1.clear();
-////    for (auto it = Goods::goodsMap.begin(); it != Goods::goodsMap.end(); ++it) {
-////        map1[it.key().x*100+it.key().y] = it.value()->type;
-////    }
-////    mapVariant = QVariant::fromValue(map1);
-////    settings.setValue("GoodType", mapVariant);
-//    settings.sync();
-//}

@@ -88,7 +88,6 @@ playscene::playscene()
     updatetimer->start(100);
     beltTime = new QTimer(this);
     connect(beltTime, &QTimer::timeout, this, [=](){
-        qDebug()<<"tomove";
         actrules::moveall(map);
         actrules::calNext(map);
         for(int i = 1; i <= 3; i++)
@@ -98,8 +97,6 @@ playscene::playscene()
                 taskFlag[i] = true;
             }
         }
-        qDebug()<<"moved";
-        qDebug()<<"caled";
     });
     beltspeed = 900;
     beltTime->start(beltspeed);
