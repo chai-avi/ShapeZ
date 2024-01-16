@@ -1,6 +1,6 @@
 ﻿#ifndef TOOLS_H
 #define TOOLS_H
-
+//常用工具
 #include<QVector>
 #include<QMap>
 #include <ctime>
@@ -36,8 +36,6 @@ struct position{
         return {x + p.x, y + p.y};
     }
 };
-//position Directions[4] = {{0,1},{1,0},{0,-1},{-1,0}};
-//extern QMap<int, position> Directions = {{0,{0,1}},{1,{1,0}},{2,{0,-1}},{3,{-1,0}}};
 static QMap<int, position> Directions = {{0,{0,-1}},{1,{1,0}},{2,{0,1}},{3,{-1,0}}};
 
 class Tools

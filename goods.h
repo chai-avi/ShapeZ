@@ -5,6 +5,7 @@
 #include<QSet>
 class Goods
 {
+    //开采物
 public:
     int type; // 1 iron, 2 copper, 3 halfcopper
     int dir;
@@ -13,30 +14,9 @@ public:
     position curpos, nextpos;
     bool isStop, acted, moved;
     static QMap<position, Goods*> goodsMap;
-    Goods(position pos,int t,int d):type(t),dir(d){
-        curpos = pos;
-        nextpos = pos;
-        goodsMap[pos] = this;
-        switch (type) {
-        case 1:
-            imgpath = ":/res/iron_mine.png";
-            cutable = 0;
-            break;
-        case 2:
-            imgpath = ":/res/copper_mine.png";
-            cutable = 1;
-            break;
-        case 3:
-            imgpath = ":/res/half_copper_mine.png";
-            cutable = 0;
-            break;
-        }
-        isStop=true; acted = false; moved = false;
-    }
+    Goods(position pos,int t,int d);
     ~Goods(){
-//        Goods* p = goodsMap[curpos];
         goodsMap.remove(curpos);
-        qDebug()<<"unconstructed"<<goodsMap.empty();
     }
 };
 

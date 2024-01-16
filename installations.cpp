@@ -2,7 +2,7 @@
 void Installations:: uninstall(){
     InstallMap[pos] = nullptr;
 }
-
+//初始化各种设备
 driller::driller(position p, int direction):Installations (p)
 {
     size_x = 1;
@@ -13,12 +13,6 @@ driller::driller(position p, int direction):Installations (p)
     InstallMap[pos] = this;
     imgpath = ":/res/miner0.png";
 }
-void driller::work(){
-
-}
-//driller::~driller(){
-//    uninstall();
-//}
 
 belt::belt(position p, int direction):Installations (p)
 {

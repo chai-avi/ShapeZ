@@ -5,12 +5,12 @@
 #include"map.h"
 #include"goods.h"
 #include"tools.h"
-
 class actrules
 {
 public:
     actrules();
     virtual ~actrules(){}
+    //游戏逻辑
     static void calNext(Map* mp);
     static void goodNext(Goods* good, Map* mp);
 

@@ -6,6 +6,7 @@
 
 class shopscene : public scenes
 {
+    //商店界面
     Q_OBJECT
 private:
     QLabel storeLabel, mapLabel, mineLabel, moneyLabel, coin;

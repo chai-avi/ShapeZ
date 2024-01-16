@@ -11,11 +11,11 @@ class Map: public QGraphicsRectItem
 {
 private:
     void setRandMine(int sum);
-    void setCenter(int size);
+    void setCenter();
+public:
     QMap<position, int> gridMap;//-1invalid, 0 empty, 1 center, 2 mine, 3 installation
     QMap<position, int> mineMap;
-public:
-    int level, rowCount, colCount, mineNum;
+    int level,mineNum;
     int col[3]={12, 20, 40}, row[3]={21, 35, 70};
     position startPos[3] = {{25, 14},{17,10},{0,0}};
     int gridSize;
@@ -29,7 +29,6 @@ public:
     }
     Map(){}
     Map(int money, bool mineUp, bool mapUp, bool moneyUp);
-//    :rowCount(x), colCount(y){}
     int askGrid(position pos){
         return gridMap[pos];
     }
@@ -39,7 +38,7 @@ public:
     Installations* askInstall(position pos){
         return Installations::InstallMap[pos];
     }
-    void setInstall(position pos, int type, int dir){
+    void setInstall(position pos, int type, int dir){//在地图上放置设备
         setGrid(pos, 3);
         if(type == 3){
         setGrid({pos.x+Directions[(dir+1)%4].x, pos.y+Directions[(dir+1)%4].y}, -1);
@@ -63,10 +62,10 @@ public:
             break;
         }
     }
-    void setGrid(position pos, int x){
+    void setGrid(position pos, int x){//设置地图
         gridMap[pos] = x;
     }
-    void unInstall(position pos){
+    void unInstall(position pos){//卸载设备
         if(askGrid(pos) == 3){
             Installations* p = Installations::InstallMap[pos];
             if(askInstall(pos)->type == 3){
@@ -75,13 +74,12 @@ public:
                 Installations::InstallMap.remove(nextpos);
             }
             Installations::InstallMap.remove(pos);
-            delete p;
         }
-        if(mineMap[pos]!=0) gridMap[pos] = 1;
+        if(mineMap[pos]!=0) gridMap[pos] = 2;
         else gridMap[pos] = 0;
     }
     void addMine(int sum);
-    void levelUp(){
+    void levelUp(){//地图升级
         if(level>=2) return;
         level++;
         if(level==1) gridSize = 60;

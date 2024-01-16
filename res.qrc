@@ -46,5 +46,6 @@
         <file>res/rotater.png</file>
         <file>res/rotater0.png</file>
         <file>res/rrotater.png</file>
+        <file>res/savegame_correct.png</file>
     </qresource>
 </RCC>

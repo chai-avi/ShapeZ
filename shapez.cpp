@@ -13,12 +13,13 @@ ShapeZ::~ShapeZ()
 }
 void ShapeZ::initScene(){
     setFixedSize(GAME_WIDTH,GAME_HEIGHT);
-        //设置窗口标题
     setWindowTitle(GAME_TITLE);
+    //开始游戏
     gamescene = new scenes();
     start = new startscene();
     shop = new shopscene;
     start->show();
+    //连接界面之间的信号和槽
     connect(&start->newgameButton, &mypushbutton::clicked, this, [=](){
         play = new playscene();
         play->show();
@@ -41,4 +42,57 @@ void ShapeZ::initScene(){
         start->show();
         shop->close();
     });
+    //存档
+    connect(&play->loadButton, &mypushbutton::clicked, this, &ShapeZ::saveload);
+}
+void ShapeZ::saveload(){
+    QSettings settings("chai_avi", "myShapeZ");
+    //全局变量
+    settings.setValue("MineUp", scenes::mineUp);
+    settings.setValue("MapUp", scenes::mapUp);
+    settings.setValue("MoneyUp", play->map->coin);
+    settings.setValue("Money", scenes::money);
+    //局部参数
+    settings.setValue("Level", play->map->level);
+    QMap<int, int> map1;
+    for (auto it = play->map->gridMap.begin(); it != play->map->gridMap.end(); ++it) {
+        map1[it.key().x*100+it.key().y] = it.value();
+    }
+    QVariant mapVariant = QVariant::fromValue(map1);
+    settings.setValue("GridMap", mapVariant);
+    map1.clear();
+    for (auto it = play->map->mineMap.begin(); it != play->map->mineMap.end(); ++it) {
+        map1[it.key().x*100+it.key().y] = it.value();
+    }
+    mapVariant = QVariant::fromValue(map1);
+    settings.setValue("MineMap", mapVariant);
+
+    settings.setValue("FinishedTask", play->finishedTask);
+
+    settings.setValue("TaskFlag1", play->taskFlag[1]);
+    settings.setValue("TaskFlag2", play->taskFlag[2]);
+    settings.setValue("TaskFlag3", play->taskFlag[3]);
+
+    settings.setValue("UpFlag1", play->upFlag[1]);
+    settings.setValue("UpFlag2", play->upFlag[2]);
+    settings.setValue("UpFlag3", play->upFlag[3]);
+
+    map1.clear();
+    for (auto it = Installations::InstallMap.begin(); it != Installations::InstallMap.end(); ++it) {
+        map1[it.key().x*100+it.key().y] = it.value()->dir;
+    }
+    mapVariant = QVariant::fromValue(map1);
+    settings.setValue("InstallDir", mapVariant);
+    map1.clear();
+    for (auto it = Goods::goodsMap.begin(); it != Goods::goodsMap.end(); ++it) {
+        map1[it.key().x*100+it.key().y] = it.value()->dir;
+    }
+    mapVariant = QVariant::fromValue(map1);
+    settings.setValue("GoodDir", mapVariant);
+    map1.clear();
+    for (auto it = Goods::goodsMap.begin(); it != Goods::goodsMap.end(); ++it) {
+        map1[it.key().x*100+it.key().y] = it.value()->type;
+    }
+    mapVariant = QVariant::fromValue(map1);
+    settings.setValue("GoodType", mapVariant);
 }

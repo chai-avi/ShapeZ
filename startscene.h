@@ -5,6 +5,7 @@
 #include"mypushbutton.h"
 class startscene : public scenes
 {
+    //开始界面
     Q_OBJECT
 private:
     QLabel backgroundLabel;

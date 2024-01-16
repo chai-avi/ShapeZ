@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QtWidgets>
+#include <QSettings>
 #include"config.h"
 #include"map.h"
 #include"installations.h"
@@ -32,8 +33,10 @@ public:
 
 private:
     Ui::ShapeZ *ui;
-protected:
+signals:
 
+public slots:
+    void saveload();
 };
 
 #endif // SHAPEZ_H

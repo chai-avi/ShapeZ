@@ -12,27 +12,38 @@
 
 class playscene :  public scenes
 {
+    //游戏界面
     Q_OBJECT
 private:
     void paintEvent(QPaintEvent *event)override;
     QTimer timer, totaltimer;
     int createvent; //0, 1drill, 2belt, 3cutter, 4bin;
+    //ui
     QLabel* imageLabel;
     QLabel coin, coinlabel, good1, good1label, good2, good2label, good3, good3label;
+    void setlabel();
+    //鼠标事件
     bool isMousePressed;
     int tmpdir;
+    //计时器
     int beltspeed, cutterspeed, drillerspeed;
     QTimer *beltTime, *cutterTime, *drillerTime, *updatetimer;
+    //音乐
     QMediaPlayer mediaPlayer;
     QMediaPlaylist mediaPlaylist;
-    void setlabel();
-
+    //局部强化
+    int task[4] = {2, 30, 20, 50};
+    QLabel Tgood1label, Tgood2label, Tgood3label;
 public:
     Map* map;
-    mypushbutton drillButton, beltButton, cutterButton, binButton, rotaterButton, musicButton, exitButton;
+    mypushbutton drillButton, beltButton, cutterButton, binButton, rotaterButton, musicButton, exitButton, loadButton;
+    mypushbutton beltUpButton, drillUpButton, cutterUpButton;
+    int finishedTask;
+    bool taskFlag[4], upFlag[4];
     explicit playscene();
     ~playscene()override{
         Goods::goodsMap.clear();
+        Installations::InstallMap.clear();
         delete map;
         delete imageLabel;
         delete beltTime;
@@ -42,7 +53,7 @@ public:
     }
 protected:
     void mouseMoveEvent(QMouseEvent *event) override {
-        // 获取鼠标当前位置
+        // 长按拖动连续放置设备
         QPoint cursorPos = event->pos();
         if (isMousePressed) {
             position curInMap = {map->startPos[map->level].x+cursorPos.x()/map->gridSize, map->startPos[map->level].y+cursorPos.y()/map->gridSize};
@@ -50,7 +61,6 @@ protected:
                 if(createvent == 3){
                     if(map->askGrid({curInMap.x+Directions[(tmpdir+1)%4].x, curInMap.y+Directions[(tmpdir+1)%4].y}) == 0 || map->askGrid({curInMap.x+Directions[(tmpdir+1)%4].x, curInMap.y+Directions[(tmpdir+1)%4].y}) == 2){
                         map->setInstall(curInMap, createvent, tmpdir);
-                        qDebug()<<curInMap.x+Directions[(tmpdir+1)%4].x<<' '<<curInMap.y+Directions[(tmpdir+1)%4].y<<' '<<map->askGrid({curInMap.x+Directions[(tmpdir+1)%4].x, curInMap.y+Directions[(tmpdir+1)%4].y});
                     }
                 }
                 else {
@@ -61,12 +71,10 @@ protected:
         }
         // 更新 QLabel 的位置，使其追随鼠标光标
         imageLabel->move(cursorPos.x() - imageLabel->width() / 2, cursorPos.y() - imageLabel->height() / 2);
-//        update();
     }
     void mousePressEvent(QMouseEvent *event) override {
         if (event->button() == Qt::RightButton) {
-                    // 在鼠标右键点击时执行的操作
-            qDebug() << "Right mouse button pressed at: " << event->pos();
+            // 鼠标右键点击时卸载设备
             QPoint cursorPos = event->pos();
             position curInMap = {map->startPos[map->level].x+cursorPos.x()/map->gridSize, map->startPos[map->level].y+cursorPos.y()/map->gridSize};
             if(map->inMap(curInMap)){
@@ -81,29 +89,25 @@ protected:
 
         }
         else if(createvent != 0)
-            {
-                QPoint cursorPos = event->pos();
-                position curInMap = {map->startPos[map->level].x+cursorPos.x()/map->gridSize, map->startPos[map->level].y+cursorPos.y()/map->gridSize};
-                qDebug() << "Left mouse button pressed at: " << event->pos();
-                qDebug()<<curInMap.x<<' '<<curInMap.y;
-                if(map->inMap(curInMap)){
-                    if(map->askGrid(curInMap) == 0 || map->askGrid(curInMap) == 2){
-                        isMousePressed = true;
-                        if(createvent == 3){
-                            if(map->askGrid({curInMap.x+Directions[(tmpdir+1)%4].x, curInMap.y+Directions[(tmpdir+1)%4].y}) == 0 || map->askGrid({curInMap.x+Directions[(tmpdir+1)%4].x, curInMap.y+Directions[(tmpdir+1)%4].y}) == 2){
-                                map->setInstall(curInMap, createvent, tmpdir);
-                                qDebug()<<curInMap.x+Directions[(tmpdir+1)%4].x<<' '<<curInMap.y+Directions[(tmpdir+1)%4].y<<' '<<map->askGrid({curInMap.x+Directions[(tmpdir+1)%4].x, curInMap.y+Directions[(tmpdir+1)%4].y});
-                            }
-                        }
-                        else {
+        {
+            //鼠标左键点击时放置设备
+            QPoint cursorPos = event->pos();
+            position curInMap = {map->startPos[map->level].x+cursorPos.x()/map->gridSize, map->startPos[map->level].y+cursorPos.y()/map->gridSize};
+            if(map->inMap(curInMap)){
+                if(map->askGrid(curInMap) == 0 || map->askGrid(curInMap) == 2){
+                    isMousePressed = true;
+                    if(createvent == 3){
+                        if(map->askGrid({curInMap.x+Directions[(tmpdir+1)%4].x, curInMap.y+Directions[(tmpdir+1)%4].y}) == 0 || map->askGrid({curInMap.x+Directions[(tmpdir+1)%4].x, curInMap.y+Directions[(tmpdir+1)%4].y}) == 2){
                             map->setInstall(curInMap, createvent, tmpdir);
                         }
-
                     }
+                    else {
+                        map->setInstall(curInMap, createvent, tmpdir);
+                    }
+
                 }
             }
-
-
+        }
         else{
             tmpdir = 0;
             QWidget::mousePressEvent(event);
@@ -111,13 +115,11 @@ protected:
     }
     void keyPressEvent(QKeyEvent *event) override {
         if (event->key() == Qt::Key_T) {
-            // 当按下 "T" 键时，增加参数 dir 的值
+            // 当按下 "T" 键时，旋转设备，增加参数 dir 的值
             QPoint cursorPos = QCursor::pos();
             tmpdir++;
-            qDebug() << "T key pressed. dir = " << tmpdir;
             QTransform rotationTransform;
             rotationTransform.rotate(90);
-//            imageLabel->setFixedSize(imageLabel->height(), imageLabel->width());
             imageLabel->setGeometry(cursorPos.x() - map->gridSize / 2, cursorPos.y() - map->gridSize / 2, imageLabel->height(), imageLabel->width());
             imageLabel->setPixmap(imageLabel->pixmap()->transformed(rotationTransform));
 
@@ -127,37 +129,21 @@ protected:
         }
     }
     void mouseReleaseEvent(QMouseEvent *event) override {
-//            if (event->button() == Qt::LeftButton) {
-                // 在释放处执行操作
-                // 例如，可以在这里添加你的释放操作逻辑
-                qDebug() << "Left mouse button released at: " << event->pos();
-                isMousePressed = false;
-                createvent = 0;
-                imageLabel->hide();
-//            }
+        //点击结束，初始化参数
+            isMousePressed = false;
+            createvent = 0;
+            imageLabel->hide();
         }
 signals:
 
 public slots:
+    //创建设备
     void drillcreat();
     void beltcreat();
     void cuttercreat();
     void bincreat();
     void rotatercreat();
     void musicEvent();
-    void exitEvent();
-    void timeStart(){
-        beltTime->start(beltspeed);
-        cutterTime->start(cutterspeed);
-        drillerTime->start(drillerspeed);
-//        updatetimer->start();
-    }
-    void timeStop(){
-        beltTime->stop();
-        cutterTime->stop();
-        drillerTime->stop();
-//        updatetimer->start();
-    }
 };
 
 #endif // PLAYSECNE_H

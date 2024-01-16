@@ -9,14 +9,14 @@
 
 class scenes : public QWidget
 {
+    //界面类
     Q_OBJECT
 public:
+    //全局变量
     static bool mineUp, mapUp, moneyUp;
     static int money;
     explicit scenes();
-//    QPushButton back;
-//    void backSet();
-    QFont font;
+    QFont font, font2;
     QPalette palette;
 signals:
 
