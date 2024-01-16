@@ -302,6 +302,7 @@ void playscene::paintEvent(QPaintEvent *event) {//绘图函数
     if(upFlag[3] == true){//切割器
         pix.load(":/res/savegame_correct");
         cutterUpButton.setIcon(pix);
+        cutterUpButton.setIconSize(QSize(45,45));
     }
     else{
         if(finishedTask >0){

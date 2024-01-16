@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QtWidgets>
 #include <QSettings>
+#include <QBuffer>
 #include"config.h"
 #include"map.h"
 #include"installations.h"
@@ -24,9 +25,9 @@ class ShapeZ : public QWidget
 private:
     scenes* gamescene;
     playscene* play;
-    startscene* start;
     shopscene* shop;
 public:
+    startscene* start;
     explicit ShapeZ(QWidget *parent = nullptr);
     ~ShapeZ();
     void  initScene();
@@ -37,6 +38,7 @@ signals:
 
 public slots:
     void saveload();
+    void loadload();
 };
 
 #endif // SHAPEZ_H

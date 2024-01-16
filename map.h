@@ -74,6 +74,7 @@ public:
                 Installations::InstallMap.remove(nextpos);
             }
             Installations::InstallMap.remove(pos);
+            delete p;
         }
         if(mineMap[pos]!=0) gridMap[pos] = 2;
         else gridMap[pos] = 0;

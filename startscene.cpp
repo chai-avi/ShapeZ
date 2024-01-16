@@ -1,6 +1,6 @@
 ﻿#include "startscene.h"
 
-startscene::startscene(): newgameButton(":/res/newgame.jpg", ""), loadButton(":/res/load.jpg", ""), storeButton(":/res/store.jpg", "")
+startscene::startscene(): newgameButton(":/res/newgame.jpg", ""), loadButton(":/res/load.jpg", ""), storeButton(":/res/store.jpg", ""),exitButton(":/res/exit.png", "")
 {
     // 新游戏 读取存档 商店
     newgameButton.setParent(this);
@@ -15,6 +15,9 @@ startscene::startscene(): newgameButton(":/res/newgame.jpg", ""), loadButton(":/
     loadButton.setFixedSize(width()/4,height()/10);
     loadButton.setIconSize(QSize(width()/3,height()/6));
     loadButton.move(width()*5/8, height()*2/3);
+    exitButton.move(width()- 90, height()-90);
+    exitButton.setIconSize(QSize(70,70));
+    exitButton.setParent(this);
 //    connect(&newgameButton, &mypushbutton::clicked, this, &startscene::newgame);
 //    connect(&storeButton, &mypushbutton::clicked, this, &startscene::store);
 //    connect(&loadButton, &mypushbutton::clicked, this, &startscene::load);

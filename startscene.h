@@ -11,7 +11,7 @@ private:
     QLabel backgroundLabel;
     QLabel newgameLabel, loadLabel, storeLabel;
 public:
-    mypushbutton newgameButton, loadButton, storeButton;
+    mypushbutton newgameButton, loadButton, storeButton, exitButton;
     explicit startscene();
 
 signals:

@@ -25,9 +25,6 @@ private:
     //鼠标事件
     bool isMousePressed;
     int tmpdir;
-    //计时器
-    int beltspeed, cutterspeed, drillerspeed;
-    QTimer *beltTime, *cutterTime, *drillerTime, *updatetimer;
     //音乐
     QMediaPlayer mediaPlayer;
     QMediaPlaylist mediaPlaylist;
@@ -38,6 +35,9 @@ public:
     Map* map;
     mypushbutton drillButton, beltButton, cutterButton, binButton, rotaterButton, musicButton, exitButton, loadButton;
     mypushbutton beltUpButton, drillUpButton, cutterUpButton;
+    //计时器
+    QTimer *beltTime, *cutterTime, *drillerTime, *updatetimer;
+    int beltspeed, cutterspeed, drillerspeed;
     int finishedTask;
     bool taskFlag[4], upFlag[4];
     explicit playscene();
